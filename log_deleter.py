@@ -1,26 +1,39 @@
 import os
 import glob
 import asyncio
-import logging
 
 async def log_remover(directory: str, prefix_of_filename: str, file_size: int):
-    while True: # Continuously check for files
-        prefix_of_filename = prefix_of_filename + '*'
-        files = glob.glob(os.path.join(directory, prefix_of_filename))
-        files.sort(key=os.path.getmtime, reverse=True)
+    """
+    Inputs:
+    directory - Where the file lies.
+    prefix_of_filename - the beginning of the filename.
+    file_size - limit as to how big the file can be before removing.
 
-        for file in files:
-            if os.path.getsize(file) > file_size:
-                await asyncio.to_thread(os.remove, file)
-                logging.info(f"The file '{file}' has been removed.")
+    Output:
+    Will detect most recent txt file with that prefix and will
+    delete it if its size is greater than the file_size input
+    """
+    # Adding an * to the name, we add a wildcard character, indicating to glob that we are looking for a pattern
+    prefix_of_filename = prefix_of_filename + '*'
+    
+    # Find all files that begin with the prefix
+    files = glob.glob(os.path.join(directory, prefix_of_filename))
+    
+    # Sort all files that begin with the prefix in descending order
+    files.sort(key=os.path.getmtime, reverse=True)
 
-        await asyncio.sleep(60) # Wait for 60 seconds before checking again to reduce average CPU usage on that thread
+    if os.path.getsize(files[0]) > file_size:
+        most_recent_file = files[0]
+        # Remove most recent file in a separate thread to avoid blocking the event loop
+        await asyncio.to_thread(os.remove, most_recent_file)
+        print(f"The most recent file '{most_recent_file}' has been removed.")
+
+# An example of how to use it:
 
 async def main():
-    # Other trading code
-    # Start the log remover in the background
-    asyncio.create_task(log_remover('.', 'test1', 3000))
-    # Rest of the code
+    # My existing trading code
+    log_remover('.', 'markov_chain_trader_log#', 2000)
+    # Rest of code
 
 if __name__ == '__main__':
     asyncio.run(main())
