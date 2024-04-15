@@ -24,8 +24,8 @@ async def log_remover(directory: str, prefix_of_filename: str, file_size: int):
 
     if os.path.getsize(files[0]) > file_size:
         most_recent_file = files[0]
-        # Remove most recent file
-        os.remove(most_recent_file)
+        # Remove most recent file in a separate thread to avoid blocking the event loop
+        await asyncio.to_thread(os.remove, most_recent_file)
         print(f"The most recent file '{most_recent_file}' has been removed.")
 
 # An example of how to use it:
