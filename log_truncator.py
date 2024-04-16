@@ -12,7 +12,7 @@ async def log_truncator(directory: str, prefix_of_filename: str, file_size: int)
 
     Output:
     Will detect most recent txt file with that prefix and will
-    delete it if its size is greater than the file_size input
+    truncate it if its size is greater than the file_size input
     """
     while True:
         prefix_of_filename = prefix_of_filename + '*'
