@@ -5,4 +5,4 @@ Wrote this code since my portfolio of strategies build up quite the backlog of l
 
 The "modified_log_deleter.py" is how I've implemented it in my actual live trading system.
 
-I've also begun to use "log_truncator.py" instead as it works better with my asynchronous trading system.
+I've also begun using "log_truncator.py" instead as it works better with my asynchronous trading system.
